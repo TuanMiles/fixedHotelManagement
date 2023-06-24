@@ -13,15 +13,7 @@ export default function ShowCustomerTable({ onClose, handleSelect }) {
   const maxCus = 3
   const handleCloseModal = () => {
     if (cusDeliver.length > maxCus) {
-      toast.warn(`1 reservation and receipt removed!`, {
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeButton: false, // Disable the close button
-        draggable: false, // Disable dragging
-        pauseOnHover: false,
-        closeOnClick: false,
-        pauseOnFocusLoss: false,
-        });;
+      window.alert(`number of customer is pass over ${maxCus} `)
     } else {
       onClose();
     }
