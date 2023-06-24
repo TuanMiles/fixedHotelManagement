@@ -5,9 +5,9 @@ export const CustomerColumns = [
     { Header: 'Full name', accessor: 'FULL_NAME', 
     Filter: TextSearchFilter,
   },
-    { Header: 'Country', accessor: 'TYPE' },
+    { Header: 'Type', accessor: 'TYPE' },
     { Header: 'Identity Number', accessor: 'IDENTITY' },
-    { Header: 'Birthday', accessor: 'BIRTHDAY' },
+    { Header: 'Address', accessor: 'ADDRESS' },
 
     // {
     //   Header: 'Action', Cell: ({ row }) => <Popup modal trigger={<button className="translate-x-3"><img src={Edit} alt="" className="w-7 h-7" /></button>}>

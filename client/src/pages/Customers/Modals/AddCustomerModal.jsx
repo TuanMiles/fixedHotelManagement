@@ -21,6 +21,7 @@ export default function CustomerModal({ close }) {
     const [IDENTITY_NUMBER, setIdentity] = useState('')
     const [COUNTRY, setCountry] = useState('Viet Nam')
     const [ADDRESS, setAddress] = useState('')
+    const [TYPE, setType] = useState('')
 
     
 
@@ -29,26 +30,32 @@ export default function CustomerModal({ close }) {
         setCountry(value.label);
     }
 
+
+
     const displayInfo = () => {
         console.log(FULL_NAME,GENDER,BIRTHDAY,PHONE_NUMBER,IDENTITY_NUMBER,COUNTRY,ADDRESS)
     }
 
-
+    useEffect(()=>{
+        if (COUNTRY !== "Viet Nam") setType("foregin") 
+        else setType("local")
+    },[COUNTRY])
 
     const addCustomer = () => {
         let user = JSON.parse(localStorage.getItem("userAuth"))
         let userid = user.ID;
+   
         console.log(FULL_NAME,ROOM,GENDER,BIRTHDAY,PHONE_NUMBER,IDENTITY_NUMBER,COUNTRY,ADDRESS)
         axios.post('http://localhost:5000/createcustomer',{
             userid: userid,
             name: FULL_NAME,
-            room: ROOM,
             gender: GENDER,
             birthday: BIRTHDAY,
             phone: PHONE_NUMBER,
             identity: IDENTITY_NUMBER,
             country: COUNTRY,
             address: ADDRESS,
+            type: TYPE,
         }).then(() => {
             console.log("thanh cong")
         })
@@ -119,9 +126,9 @@ export default function CustomerModal({ close }) {
 
                     />
                 </div>
-                <div className="flex mt-3 ml-8">
+                <div className="flex mt-3 ml-8 z-10">
                     <label htmlFor="country" className="mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
-                    <Select id="country" className="z-10 w-[10rem] ml-12 -translate-y-1" options={options} value={value} 
+                    <Select id="country" className="w-[10rem] ml-12 -translate-y-1" options={options} value={value} 
                         onChange={changeHandler}
                         />
                 </div>
@@ -137,18 +144,8 @@ export default function CustomerModal({ close }) {
 
                     />
                 </div>
-                <div className="ml-8 mt-1">
-                    <label htmlFor="room" className="text-sm font-medium text-gray-900 dark:text-white">Room</label>
-                    <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 ml-[60px] w-[6rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        type="text"
-                        name="room"
-                        id="room"
-                        onChange={(e) => {
-                            setRoom(e.target.value);
-                        }}
-                    />
-                </div>
-                <div className="relative mt-2 -translate-x- translate-y-[16rem]">
+    
+                <div className="relative mt-2 -translate-x- translate-y-[2rem]">
                     {/* <button className="right-0 bottom-0 -translate-x-40 absolute  bg-[#f59e0b] text-white p-2 rounded-lg">Delete</button> */}
                     <button className="right-0 bottom-0 absolute 8 bg-[#374151] w-[8rem] text-white p-2 rounded-lg cursor-pointer" onClick={addCustomer}>Save Changes</button>
                 </div>

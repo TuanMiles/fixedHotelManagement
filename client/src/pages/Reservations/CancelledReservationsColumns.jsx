@@ -7,10 +7,11 @@ import { ModalContext } from "../../ModalContext";
 import { useContext } from "react";
 import ReturnConfirmedModal from "./ReturnConfirmed/ReturnConfirmedModal";
 import { ro } from "date-fns/locale";
+import {TextSearchFilter} from '../../components/TextSearchFilter'
 
 export const CancelledReservationsColumns = [
   { Header: "Id", accessor: (row, index) => index + 1 },
-  { Header: "Room", accessor: "ROOM" },
+  { Header: "Room", accessor: "ROOM", Filter: TextSearchFilter},
   {
     Header: "Details",
     Cell: ({ row }) => (
@@ -43,7 +44,7 @@ export const CancelledReservationsColumns = [
   },
   {
     Header: "Status",
-    Cell: ({ row }) => <Popup modal trigger={<button className="translate-x-[-10px] text-xs text-white rounded-lg p-2 bg-[#3d70b2]">Return Confirmed</button>}>
+    Cell: ({ row }) => <Popup modal trigger={<button className="translate-x-[-15px] text-xs text-white rounded-lg p-2 bg-[#3d70b2]">Return Confirmed</button>}>
     {close => <ReturnConfirmedModal close={close} ID={row.original.ID} ROWDATA={row.original}
   />}
   </Popup>

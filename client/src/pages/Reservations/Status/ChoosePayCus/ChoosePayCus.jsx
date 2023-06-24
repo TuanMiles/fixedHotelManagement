@@ -74,7 +74,7 @@ export default function ChooseCustomer({ ID, isOpen, onClose, onSaveChanges, ROW
                 </div>
     <div className="font-neon text-xl translate-x-[14rem] absolute">Choose who to pay:</div>
     <div className="mt-[6rem]">
-        <ChoosePayCusTable ID={ID} onClose={handleCloseModal} handleSelect={setObj} ROWDATA={ROWDATA} statedeliver={statedeliver}/>
+        <ChoosePayCusTable ID={ID} onClose={handleCloseModal} handleSelect={setObj} ROWDATA={ROWDATA}/>
     </div>
       {/* <button onClick={handleSaveChanges}>Save Changes</button> */}
     </Modal>

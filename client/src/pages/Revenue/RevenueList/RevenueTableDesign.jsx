@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
 
-const ReservationTableDesign = ({ tableInstance, filter }) => {
+const Table = ({ tableInstance, filter }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
   return (
-    <div className='h-[34rem] overflow-auto'>
+    <div>
       <table
         {...getTableProps()}
         className="w-full table-fixed shadow-lg rounded-lg border border-gray-200 bg-white  "
@@ -23,7 +23,7 @@ const ReservationTableDesign = ({ tableInstance, filter }) => {
                   )}
                 >
                   {column.render("Header")}
-                  <div className="absolute translate-y-[-4.5rem] translate-x-[-1rem]">
+                  <div className="absolute translate-y-[-6rem]">
                     {column.canFilter ? column.render("Filter") : null}
                   </div>
                 </th>
@@ -56,4 +56,4 @@ const ReservationTableDesign = ({ tableInstance, filter }) => {
   );
 };
 
-export default ReservationTableDesign;
+export default Table;

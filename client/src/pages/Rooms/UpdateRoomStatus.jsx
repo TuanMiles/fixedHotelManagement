@@ -5,14 +5,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function UpdateReceiptStatus({ ID, STATUS, ROWDATA }) {
+export default function UpdateRoomStatus({ ID, STATUS, ROWDATA }) {
   const [status, setStatus] = useState(STATUS);
   const [openModal, setOpenModal] = useState(false);
-  const hotelstatus = ["Paid","Pending","Refunded"];
+  const hotelstatus = ["Available", "In Use"];
   const statusColors = {
-    "Paid": "bg-green-500",
-    "Pending": "bg-[#FFB72B]",
-    "Refunded": "bg-[#fe5f55]",
+    "Available": "bg-green-500",
+    "In Use": "bg-[#fe5f55]",
   };
   const [optioncolor, setOptionColor] = useState(statusColors[STATUS]);
 
@@ -62,21 +61,9 @@ export default function UpdateReceiptStatus({ ID, STATUS, ROWDATA }) {
 
   return (
  <>
-
-      <ToastContainer  toastStyle={{ marginTop: '-9rem' }}/>
- 
-     <select
-       className={`w-[5.5rem] p-1 text-xs ${optioncolor} text-white rounded-xl border-2`}
-       value={status}
-       onChange={(e)=>{setStatus(e.target.value) 
-        updateStatus(e.target.value)}}
-     >
-       {hotelstatus.map((value, key) => (
-         <option value={value} key={key} className='p-2'>
-           {value}
-         </option>
-       ))}
-     </select>
+         <div className={`py-2 w-[5rem] ml-11 text-xs ${optioncolor} text-white rounded-lg`}>
+           {STATUS}
+         </div>
  </>
   );
 }

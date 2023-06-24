@@ -35,7 +35,8 @@ export default function CheckDetailTable({ID, PAYCUS}) {
     []
   );
 
-    console.log(CustomerData)
+  
+  console.log(CustomerData)
 
   const data = useMemo(() => CustomerData);
   const columns = useMemo(() => CustomerColumns);

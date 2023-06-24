@@ -67,7 +67,7 @@ export default function ShowCustomerTable({ onClose, handleSelect }) {
       { Header: 'Gender', accessor: 'GENDER' },
       { Header: 'Birthday', accessor: 'BIRTHDAY' },
       { Header: 'Phone Number', accessor: 'PHONE_NUMBER' },
-      { Header: 'Identity Number', accessor: 'IDENTITY_NUMBER' },
+      { Header: 'Identity Number', accessor: 'IDENTITY_NUMBER', Filter: TextSearchFilter },
       { Header: 'Country', accessor: 'COUNTRY' },
       { Header: 'Address', accessor: 'ADDRESS' },
     ],
@@ -92,9 +92,10 @@ export default function ShowCustomerTable({ onClose, handleSelect }) {
     }
   );
 
+
   return (
     <div className='flex flex-col'>
-      <ShowCustomerTableDesign tableInstance={tableInstance} handleSelect={setObj} />
+      <ShowCustomerTableDesign tableInstance={tableInstance} handleSelect={setObj}/>
       <div
         className='font-medium cursor-pointer bg-sky-400 text-center rounded-xl text-white px-16 py-3 translate-x-[34rem] translate-y-[20rem] absolute'
         onClick={handleCloseModal}

@@ -3,11 +3,12 @@ import CheckDetail from "../Modals/Detail/CheckDetail";
 import ReturnConfirmedModal from "../ReturnConfirmed/ReturnConfirmedModal";
 import UpdateStatus from "../Status/UpdateStatus";
 import Edit from "../../../assets/edit.png";
-import EditDataModal from "../Modals/EditDataModals/EditDataModal";
+import EditDataModal from "./EditDataModal";
+import {TextSearchFilter} from '../../../components/TextSearchFilter'
 
 export const PendingReservationsColumns = [
   { Header: "Id", accessor: (row, index) => index + 1 },
-  { Header: "Room", accessor: "ROOM" },
+  { Header: "Room", accessor: "ROOM", Filter: TextSearchFilter},
   {
     Header: "Details",
     Cell: ({ row }) => (
@@ -71,6 +72,7 @@ export const PendingReservationsColumns = [
             regisdatetime={row.original.REGISDATE}
             arrivaltime={row.original.ARRIVAL}
             departuretime={row.original.DEPARTURE}
+            rowdata={row.original}
           />
         )}
       </Popup>

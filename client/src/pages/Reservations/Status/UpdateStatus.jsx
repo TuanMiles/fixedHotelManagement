@@ -3,13 +3,14 @@ import ChoosePayCus from "./ChoosePayCus/ChoosePayCus";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function UpdateStatus({ ID, STATUS, DEPARTURE, ROWDATA }) {
   const [status, setStatus] = useState(STATUS);
   const [openModal, setOpenModal] = useState(false);
   const [realtimestatus, setrealtimestatus] = useState('')
   const [rcstatus, setrcstatus] = useState()
-  
+
   const hotelstatus = [
     "Pending",
     "Confirmed",
@@ -35,6 +36,23 @@ export default function UpdateStatus({ ID, STATUS, DEPARTURE, ROWDATA }) {
     "Checked In": "bg-blue-500",
     "Checked Out": "bg-[#9ca3af]",
   };
+
+const navigate = useNavigate();
+const location = useLocation();
+const [activeComponent, setActiveComponent] = useState(null);
+const handleMidwayClick = (componentName) => {
+    setActiveComponent(componentName);
+    console.log(componentName)
+    navigate(`/admin/reservations/${componentName.toLowerCase()}`);
+};
+
+useEffect(() => {
+    const path = location.pathname.split('/');
+    if (path[1] === 'admin') {
+      setActiveComponent(path[3]);
+      console.log("lcgt",path[3])
+    }
+  }, [location.pathname]);
 
 
   const [optioncolor, setOptionColor] = useState(statusColors[STATUS]);
@@ -86,7 +104,7 @@ export default function UpdateStatus({ ID, STATUS, DEPARTURE, ROWDATA }) {
     if (data === "Confirmed") {
       setOpenModal(true);
     }
-    if (data === "Cancelled") {
+    if (data === "Cancelled" && location.pathname !== "/admin/reservations") {
       deleteReceipt();
     }
   }

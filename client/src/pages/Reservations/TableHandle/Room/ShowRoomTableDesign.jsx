@@ -7,7 +7,7 @@ const ShowRoomTableDesign = ({ tableInstance, filter }) => {
   return (
     
  <div>
-     <table {...getTableProps()} className="w-full table-fixed bg-white rounded-lg">
+     <table {...getTableProps()} className="w-full overflow-auto bg-white rounded-lg">
        <thead>
          
          {headerGroups.map(headerGroup => (

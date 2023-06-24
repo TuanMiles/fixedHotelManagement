@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import ReservationTableDesign from '../ReservationTableDesign';
 import { PendingReservationsColumns } from './PendingReservationsColumns';
 
+
 export default function PendingReservationsTable({refresh}) {
 
   const [ReservationData, setData] = useState([]);

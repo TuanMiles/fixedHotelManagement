@@ -8,7 +8,6 @@ export const CustomerColumns = [
     { Header: 'Full name', accessor: 'FULL_NAME', 
     Filter: TextSearchFilter,
   },
-    { Header: 'Room', accessor: 'ROOM' },
     { Header: 'Gender', accessor: 'GENDER' },
     { Header: 'Birthday', accessor: 'BIRTHDAY' },
     { Header: 'Phone Number', accessor: 'PHONE_NUMBER' },

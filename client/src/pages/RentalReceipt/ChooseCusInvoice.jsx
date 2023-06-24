@@ -1,10 +1,11 @@
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from 'react-modal';
-import ShowRoomTable from "../../TableHandle/Room/ShowRoomTable";
+import ShowRoomTable from "../Reservations/TableHandle/Room/ShowRoomTable";
+import ShowCusInVoiceTable from "./ShowCusInVoiceTable";
 
 Modal.setAppElement('#root');
 
-export default function ChooseRoom({ isOpen, onClose, onSaveChanges }) {
+export default function ChooseCusInvoice({ isOpen, onClose, onSaveChanges, reDeliver }) {
 
   const handleCloseModal = () => {
     onClose();
@@ -37,7 +38,7 @@ export default function ChooseRoom({ isOpen, onClose, onSaveChanges }) {
                     &times;
                 </div>
     <div className="mt-[4rem]">
-        <ShowRoomTable onClose={handleCloseModal}/>
+        <ShowCusInVoiceTable onClose={handleCloseModal} reDeliver={reDeliver}/>
     </div>
       {/* <button onClick={handleSaveChanges}>Save Changes</button> */}
     </Modal>

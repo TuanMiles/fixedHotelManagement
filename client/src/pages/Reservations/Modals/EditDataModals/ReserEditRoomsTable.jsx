@@ -79,12 +79,12 @@ export default function ReserEditRoomsTable({ onClose, RoomID, roomname, roomtyp
       <ShowRoomEditTableDesign tableInstance={tableInstance} selectedID={selectedRoom} deliverroom={deliverroom}/>
       <div className="h-[7rem] w-[11rem] translate-x-[34rem] translate-y-[-10rem] z-10 ml-4 p-2 border-4 border-white rounded-xl">
 
-        <div className="mb-2 translate-y-[-10px] translate-x-[-10px] w-[11rem] bg-slate-50 rounded-lg p-2 text-center">Picked Room:</div>
-        <div className="flex translate-x-[3rem]">
-          <div htmlFor="room" className="mb-2 mt-1 text-sm ml-2 text-gray-900 dark:text-white">
+        <div className="mb-2 translate-y-[-10px] translate-x-[-10px] w-[11rem] bg-slate-50 rounded-lg p-2 text-emerald-600 text-center">Picked Room:</div>
+        <div className="flex translate-x-[3rem] text-white">
+          <div htmlFor="room" className="mb-2 mt-1 text-sm ml-2  dark:text-white">
             {PickData.length === 0 ? `${roomname}` : `${PickData.ROOM_NO}`}
           </div>
-          <div htmlFor="room" className="mb-2 mt-1 text-sm ml-2 text-gray-900 dark:text-white">
+          <div htmlFor="room" className="mb-2 mt-1 text-sm ml-2  dark:text-white">
             {PickData.length === 0 ? `${roomtype}` : `${PickData.TYPE}`}
           </div>
 

@@ -13,6 +13,7 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
   const [isPicked, setIsPicked] = useState(0)
   const [rcstatus, setrcstatus] = useState()
 
+
   const handleCloseModal = () => {
     onClose();
   };
@@ -30,17 +31,18 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
     }
   })
 
+
+  
   const [CustomerData, setData] = useState([]);
 
   const updatePayCus = async (data) => {
     const id = ID
     const paycusid = data.CID
     console.log('thanh cong')
-    axios.put("http://localhost:5000/updatepaycus", {
+    await axios.put("http://localhost:5000/updatepaycus", {
       id: id,
       paycusid: paycusid,
     }).then(
-
       (response) => {
         toast.success('Reservation confirmed', {
           autoClose: 1500,
@@ -53,26 +55,20 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
           });
       }
     )
+    await AddReceiptCus(data)
   }
 
-  const updateRevenue = async () => {
-    try {
-        await axios.post("http://localhost:5000/createreservationdetail", {
-       
-        });
-      
-      console.log("Data posted successfully");
-    } catch (error) {
-      console.error("Error posting data:", error);
-    }
-  }
 
   const arrivalDate = new Date(ROWDATA.ARRIVAL);
   const departureDate = new Date(ROWDATA.DEPARTURE);
   let user = JSON.parse(localStorage.getItem("userAuth"));
   let userid = user.ID;
 
-  const AddCusReceipt = async (data) => {
+  const [RoomsType, setRoomType] = useState([])
+
+
+
+  const AddReceiptCus = async (data) => {
     // const date = parse(departure, 'M/d/yyyy', new Date());
     // const month = format(date, 'M');
     // const year = format(date, 'yyyy');
@@ -81,7 +77,7 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
     const address = data.ADDRESS
     let name = data.FULL_NAME
     let price = ROWDATA.PRICE
-    let printday = ROWDATA.DEPARTURE
+    let printday = ROWDATA.REGISDATE
     const dayDifference = Math.ceil((departureDate - arrivalDate) / (1000 * 60 * 60 * 24));
     try {
       const response = await axios.post('http://localhost:5000/addreceiptcus', {
@@ -90,14 +86,16 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
         paycusid : paycusid,
         address : address,
         name: name,
+        month: ROWDATA.MONTH,
+        year: ROWDATA.YEAR,
         room: ROWDATA.ROOM,
         roomtype: ROWDATA.ROOM_TYPE,
         price: price,
         printday: printday,
+        peoplenumb: ROWDATA.PEOPLE_NUMB,
         rentdays: dayDifference,
       });
       console.log("thanh cong post len receipt");
-      setIsPicked(2)
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -107,6 +105,9 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
       console.error("Error posting data:", error);
     }
   };
+
+  
+
 
   // const AddRevenue = async (reservationID) => {
   //   try {
@@ -122,7 +123,7 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
   //     console.error("Error updating data:", error);
   //   }
   // };
-  
+
   useEffect(() => {
     const getCustomer = async () => {
       // let temp = axios.get('http://localhost:5000/customers')
@@ -162,7 +163,7 @@ export default function ChoosePayCusTable({ ID, onClose, handleSelect, ROWDATA})
           onClick={() => {
             console.log(row.original)
             updatePayCus(row.original)
-            AddCusReceipt(row.original)
+        
             
             // handleCloseModal();
 

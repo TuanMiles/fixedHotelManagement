@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
-const CheckReceiptDetailTableDesign = ({ tableInstance, handleSelect, makeSelectableRows, paycusid }) => {
+const CancelledReservationTableDesign = ({ tableInstance, handleSelect, makeSelectableRows }) => {
+  const [cusDeliver, setCusDeliver] = useState([]);
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, selectedFlatRows } = tableInstance;
 
+  useEffect(() => {
+    setCusDeliver(selectedFlatRows.map((row) => row.original));
+    console.log(cusDeliver)
+  }, [selectedFlatRows]);
+
+  
+  useEffect(() => {
+    handleSelect(cusDeliver);
+  }, [cusDeliver, handleSelect]);
+
+  
+
   return (
-    <div className='w-[37.5rem] h-[11rem] overflow-auto'>
-      <table {...getTableProps()} className="w-[36rem] table-fixed bg-white translate-y-3 rounded-lg">
+    <div className=' overflow-auto'>
+      <table {...getTableProps()} className="w-full h-full table-fixed bg-white rounded-lg">
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -19,7 +33,9 @@ const CheckReceiptDetailTableDesign = ({ tableInstance, handleSelect, makeSelect
                   )}
                 >
                   {column.render('Header')}
-             
+                  <div className='absolute translate-y-[-4.5rem] ml-[-3rem]' >
+                    {column.canFilter ? column.render("Filter") : null}
+                  </div>
                 </th>
               ))}
             </tr>
@@ -28,14 +44,10 @@ const CheckReceiptDetailTableDesign = ({ tableInstance, handleSelect, makeSelect
         <tbody {...getTableBodyProps()}>
           {rows.map(row => {
             prepareRow(row);
-            // const isHighlighted = row.original.CID === paycusid; // Compare CID with paycusid
-
             return (
               <tr
                 {...row.getRowProps()}
-                className={classNames("border-t border-gray-200", {
-                  // Apply green background if CID matches paycusid
-                })}
+                className="border-t border-gray-200"
               >
                 {row.cells.map(cell => (
                   <td
@@ -53,8 +65,9 @@ const CheckReceiptDetailTableDesign = ({ tableInstance, handleSelect, makeSelect
           })}
         </tbody>
       </table>
+
     </div>
   );
 };
 
-export default CheckReceiptDetailTableDesign;
+export default CancelledReservationTableDesign;

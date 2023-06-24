@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTable } from 'react-table';
-import Table from '../../../Table';
 import { useMemo } from 'react';
 import { RevenueColumns } from './RevenueColumns';
+import RevenueTableDesign from './RevenueTableDesign';
+import Table from '../../../Table';
 
-export default function RevenueList({deliverstate, month, year}) {
+export default function RevenueList({month, year}) {
 
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
@@ -20,18 +21,7 @@ export default function RevenueList({deliverstate, month, year}) {
         setOpen(false)
     }
 
-    useEffect(() => {
-        let user = JSON.parse(localStorage.getItem("userAuth"))
-        let userid = user.ID;
-        const getReservations = async () => {
-          // let temp = axios.get('http://localhost:5000/customers')
-          const response = await fetch(`http://localhost:5000/reservationsmonthscale?userid=${userid}&month=${month}&year=${year}`);
-          const jsonData = await response.json(); 
-          console.log("Reser", jsonData);
-          setReserData(jsonData);
-        }
-        getReservations()
-      },[])
+    console.log("month year", month, year)
 
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem("userAuth"))
@@ -42,11 +32,11 @@ export default function RevenueList({deliverstate, month, year}) {
           // let temp = axios.get('http://localhost:5000/customers')
           const response = await fetch(`http://localhost:5000/getrevenue?userid=${userid}&month=${receiptmonth}&year=${receiptyear}`);
           const jsonData = await response.json(); 
-          console.log(jsonData);
+          console.log("revenue",jsonData);
           setRevenueData(jsonData);
         }
         getRevenue()
-      },[])
+      },[month, year])
 
     const data = useMemo(() => RevenueData);
     const columns = useMemo(() => RevenueColumns);
@@ -57,8 +47,7 @@ export default function RevenueList({deliverstate, month, year}) {
         <div className=''>
             <div>Month: {month}</div>
             <div>Year: {year}</div>
-            <div onClick={()=>deliverstate(false)}>back</div>
-            <Table tableInstance={tableInstance} />
+            <RevenueTableDesign tableInstance={tableInstance} />
         </div>
     );
 };

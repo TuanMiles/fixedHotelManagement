@@ -1,11 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import "../../../css/AddReservation.css";
-import DatePicker from "react-date-picker";
+import { differenceInDays } from 'date-fns';
+import DatePicker from "react-datepicker";
 import Modal from "react-modal";
-import "react-date-picker/dist/DatePicker.css";
+// import "react-date-picker/dist/DatePicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 import { format, parse } from "date-fns";
 import axios from "axios";
 import { set } from "lodash";
+import { isSameDay } from 'date-fns';
 
 Modal.setAppElement("#root");
 
@@ -14,6 +17,7 @@ export default function AddReservations({
   onClose,
   onOpenModal2,
   onOpenModal3,
+  onOpenModal4,
 }) {
   const [method, setMethod] = useState("Cash");
   const [buttonColor, setButtonColor] = useState("bg-gray-500");
@@ -28,8 +32,19 @@ export default function AddReservations({
   const [regisauto, setRegisAuto] = useState("");
   const [price, setPrice] = useState(0);
   const [phuthu, setPhuthu] = useState([]);
+  const [arrivalDate, setArrivalDate] = useState(null);
+  const [departureDate, setDepartureDate] = useState(null);
+  const [unavailableDates, setUnavailableDates] = useState([]);
+  const [fakeblocktime, setfakeblocktime] = useState([])
+
+  let customers = JSON.parse(localStorage.getItem("pickedCustomers"));
+  let room = JSON.parse(localStorage.getItem("RoomPickData"));
 
   // const [cusList, setCusList] = useState([]);
+
+  useEffect(() => {
+    fetchUnavailableDates();
+  }, []);
 
   const handleCloseModal = () => {
     localStorage.removeItem("pickedCustomers");
@@ -50,6 +65,68 @@ export default function AddReservations({
     onOpenModal3();
   };
 
+  const handleOpenModal4 = () => {
+    onOpenModal4();
+  };
+
+
+  const [roomdata, setroomData] = useState([]);
+
+
+  useEffect(() => {
+    if (room) {
+      getblocktime()
+    }
+  }, [localStorage.getItem("RoomPickData")])
+
+  const getblocktime = async () => {
+    // let temp = axios.get('http://localhost:5000/customers')
+    let user = JSON.parse(localStorage.getItem("userAuth"))
+    let userid = user.ID;
+    let roomfake = JSON.parse(localStorage.getItem("RoomPickData"));
+    const response = await fetch(`http://localhost:5000/blocktime?userid=${userid}&room=${roomfake.ROOM_NO}`, {
+    });
+    const jsonData = await response.json();
+    // console.log('abc',jsonData);
+    setroomData(jsonData);
+  }
+
+  useEffect(() => {
+    fetchUnavailableDates();
+  }, [roomdata])
+
+  // console.log("loasdas",roomdata,unavailableDates)
+
+  const fetchUnavailableDates = () => {
+    console.log('room data: ', roomdata);
+    const reservations = roomdata;
+    const dates = reservations.map((reservation) => {
+      const { ARRIVAL, DEPARTURE } = reservation;
+      const startDate = new Date(ARRIVAL);
+      const endDate = new Date(DEPARTURE);
+      const unavailableDates = [];
+      const currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        unavailableDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return unavailableDates;
+    });
+    const flattenedDates = dates.flat();
+    console.log("unavai", flattenedDates)
+    setUnavailableDates(flattenedDates);
+  };
+
+  const isDateDisabled = (date) => {
+    return unavailableDates.some((unavailableDate) =>
+      isSameDay(date, unavailableDate)
+    );
+  };
+
+
+
+
   const handleMethodChange = (event) => {
     const selectedMethod = event.target.value;
     setMethod(selectedMethod);
@@ -64,6 +141,7 @@ export default function AddReservations({
       setShowCouponInput(false);
     }
   };
+
 
   function getDaysDifference(startDate, endDate) {
     const diffTime = Math.abs(endDate - startDate);
@@ -87,8 +165,7 @@ export default function AddReservations({
     },
   };
 
-  let customers = JSON.parse(localStorage.getItem("pickedCustomers"));
-  let room = JSON.parse(localStorage.getItem("RoomPickData"));
+
 
   useEffect(() => {
     const getPhuthu = async () => {
@@ -124,14 +201,18 @@ export default function AddReservations({
     }
   }, [room]);
 
+  const maxCus = 3
   useEffect(() => {
-    if (price > 0) {
-      setButtonColor("bg-emerald-700");
+    if (customers) {
+      if (price > 0 && customers.length <= maxCus) {
+        setButtonColor("bg-emerald-700");
+      }
     }
   });
 
   let user = JSON.parse(localStorage.getItem("userAuth"));
   let userid = user.ID;
+  
   const AddReservations = async () => {
     const date = parse(regis, "M/d/yyyy", new Date());
     const month = format(date, "M");
@@ -151,13 +232,14 @@ export default function AddReservations({
           year: year,
           price: price,
           dayprice: room.PRICE,
+          pnumb: customers.length,
         }
       );
       console.log("Thanh Cong");
       const reservationID = response.data.insertId;
       console.log("haha")
       console.log(response)
-      AddReservationsDetail(reservationID);
+      await AddReservationsDetail(reservationID);
     } catch (error) {
       console.error("Error posting data:", error);
     }
@@ -171,10 +253,11 @@ export default function AddReservations({
           reserID: reservationID,
           customerID: customer.ID,
           fullname: customer.FULL_NAME,
-          custype: customer.COUNTRY,
+          country: customer.COUNTRY,
           identity: customer.IDENTITY_NUMBER,
           birthday: customer.BIRTHDAY,
           address: customer.ADDRESS,
+          type: customer.TYPE,
         });
       }
       console.log("detail data posted successfully");
@@ -186,6 +269,50 @@ export default function AddReservations({
 
   // let customers = JSON.parse(localStorage.getItem('pickedCustomers'))
   // console.log(customers)
+
+  const [disableClick, setDisableClick] = useState(true);
+
+
+  useEffect(() => {
+    if (room) {
+      setDisableClick(false)
+    }
+    else setDisableClick(true)
+  }, [room])
+
+
+  const currentDate = new Date();
+  const formattedCurrentDate = format(currentDate, 'yyyy-MM-dd');
+
+  const handleDepartureChange = (date) => {
+    const selectedStartDate = startDate;
+    const selectedEndDate = new Date(date);
+    console.log(startDate,selectedEndDate)
+    selectedEndDate.setDate(selectedEndDate.getDate() + numOfDays);
+  
+    for (const unavailableDate of unavailableDates) {
+      if (
+        (selectedStartDate <= unavailableDate && unavailableDate <= selectedEndDate)
+        // (unavailableDate <= selectedStartDate && selectedStartDate <= unavailableDate)
+      ) {
+        // Date range conflicts with unavailable date
+        alert('Selected date range conflicts with unavailable dates.');
+        return;
+      }
+    }
+  
+    setEndDate(date);
+    setDeparture(new Date(date).toLocaleDateString());
+    const diff = getDaysDifference(selectedStartDate, date);
+    setNumOfDays(diff);
+  };
+
+  useEffect(() => {
+    if (arrival && departure) {
+      const daysDifference = differenceInDays(new Date(departure), new Date(arrival));
+      setNumOfDays(daysDifference);
+    } // or whatever default value you want to set
+  },[arrival,departure,regis])
 
   return (
     <Modal
@@ -199,7 +326,7 @@ export default function AddReservations({
       >
         &times;
       </div>
-      <div className="pb-3 text-2xl flex justify-center">Add Reservation!</div>
+      <div className="pb-3 text-2xl flex justify-center">Add Reservation</div>
 
       <div className="grid grid-cols-2 grid-flow-row gap-x-4 gap-y-4 mt-5 rounded-sm">
         <div>
@@ -207,30 +334,40 @@ export default function AddReservations({
             <div className="ml-8 flex">
               <div
                 htmlFor="registration"
-                className="border border-gray-500 h-[8rem] w-[20rem] p-2 overflow-auto rounded-md"
+                className="border border-gray-500 mt-5 h-[8rem] w-[28rem] p-2 overflow-auto rounded-md"
               >
-                {customers === null
-                  ? "Customer name"
-                  : customers.map((item) => (
-                      <div className="flex mt-2 ml-2">
-                        <div className="flex">
-                          <span className="font-medium mr-1">Name:</span>
 
-                          {item.FULL_NAME}
-                        </div>
+                {customers === null
+                  ? ""
+                  : customers.map((item) => (
+                    <div className="flex mt-2 ml-2">
+                      <div className="flex">
+                        <span className="font-medium mr-1">Name:</span>
+
+                        {item.FULL_NAME}
                       </div>
-                    ))}
+                    </div>
+
+                  ))}
               </div>
               <div
                 onClick={handleOpenModal2}
-                className="text-xs translate-x-[21rem] translate-y-[2.5rem] cursor-pointer bg-emerald-700 text-white p-2 rounded-lg  absolute"
+                className="text-xs translate-x-[21rem] translate-y-[-1rem] cursor-pointer bg-emerald-700 text-white p-2 rounded-lg  absolute"
               >
                 Choose Customer
               </div>
+              {/* <div onClick={handleOpenModal4} 
+              className="text-xs translate-x-[14rem] translate-y-[-1rem] cursor-pointer bg-emerald-700 text-white p-2 rounded-lg  absolute">
+                Add Customer
+              </div> */}
             </div>
             <div className="grid grid-flow-col grid-rows-2 gap-y-2 text-sm"></div>
           </div>
-          <div className=" grid grid-rows-3 h-[14rem] grid-flow-col gap-y-[2rem] py-[30px] px-[10px] rounded-md w-[32rem] mt-[1.5rem] border border-gray-500">
+          {/* disable */}
+          <div className="absolute translate-x-[10rem] uppercase translate-y-[7rem] text-lg font-neon">
+            {disableClick === false ? "" : "Please Choose Room First"}
+          </div>
+          <div style={{ pointerEvents: disableClick ? 'none' : 'auto' }} className={`card ${disableClick ? 'opacity-30' : ''} grid grid-rows-3 h-[14rem] grid-flow-col gap-y-[2rem] py-[30px] px-[10px] rounded-md w-[32rem] mt-[1.5rem] border border-gray-500`}>
             <div className="ml-8">
               <label
                 htmlFor="registration"
@@ -241,9 +378,10 @@ export default function AddReservations({
               <DatePicker
                 id="arrival"
                 format="dd-MM-y"
-                selected={regis}
+                selected={startDate}
+                filterDate={(date) => format(date, 'yyyy-MM-dd') >= formattedCurrentDate}
                 value={regis}
-                className="bg-white w-[10rem] h-[2.3rem] ml-3 border"
+                className="bg-white w-[10rem] h-[2.3rem] ml-[10rem] translate-y-[-30px] p-2 border border-gray-300 rounded-lg"
                 onChange={(date) => {
                   const dateString = new Date(date).toLocaleDateString();
                   setStartDate(date);
@@ -276,8 +414,10 @@ export default function AddReservations({
                     format="dd-MM-y"
                     selected={startDate}
                     minDate={regisauto}
+                    filterDate={(date) => format(date, 'yyyy-MM-dd') >= formattedCurrentDate}
+                    excludeDates={unavailableDates}
                     value={arrival}
-                    className="bg-white w-[10rem] h-[2.3rem]"
+                    className="bg-white w-[10rem] h-[2.3rem] border border-gray-300 rounded-lg"
                     onChange={(date) => {
                       const dateString = new Date(date).toLocaleDateString();
                       setStartDate(date);
@@ -295,13 +435,15 @@ export default function AddReservations({
                   <DatePicker
                     id="departure"
                     format="dd-MM-y"
-                    selected={endDate}
+                    selected={startDate}
                     minDate={startDate}
+                    excludeDates={unavailableDates}
                     value={departure}
-                    className="bg-white w-[10rem] h-[2.3rem]"
+                    className="bg-white w-[10rem] h-[2.3rem] border-emerald-900 border rounded-lg"
                     onChange={(date) => {
                       const dateString = new Date(date).toLocaleDateString();
                       setEndDate(date);
+                      handleDepartureChange(date)
                       setDeparture(dateString);
                       const diff = getDaysDifference(startDate, date);
                       setNumOfDays(diff);
@@ -317,7 +459,7 @@ export default function AddReservations({
         </div>
         <div className="-ml-3">
           <div className=" h-[12rem] grid-flow-col gap-y-[3rem] py-[30px] px-[10px] rounded-md ml-[1rem] -mt-5 w-[30rem] border border-gray-900">
-            <div className="h-[8rem] w-[20rem] ml-4 p-2 overflow-auto border border-gray-700 rounded-md">
+            <div className="h-[8rem] w-[27rem] ml-4 p-2 mt-4 overflow-auto border border-gray-700 rounded-md">
               <div className="ml-2 mt-1">
                 <div className="flex">
                   <label htmlFor="" className="font-medium">
@@ -344,21 +486,22 @@ export default function AddReservations({
               </div>
               <div className="ml-2">
                 <label htmlFor="" className="font-medium">
-                  Description:
+                  Price:
                 </label>
-                <div
+                <span
                   htmlFor="description"
-                  className="mb-2 -mt-0.5 text-xs font-medium text-gray-900 dark:text-white"
+                  className="mb-2 -mt-0.5 ml-2 text-lg font-medium text-gray-900 dark:text-white"
                 >
-                  {room === null ? "" : `${room.DESCRIPTION}`}
-                </div>
+                  {room === null ? "" : `${room.PRICE.toLocaleString(undefined, {})}`} (đ)
+                </span>
               </div>
+
             </div>
 
             <div className="">
               <div
                 onClick={handleOpenModal3}
-                className="cursor-pointer text-xs text-white mb-2 bg-emerald-700 rounded-md p-2 absolute translate-x-[22rem] translate-y-[-5.5rem]"
+                className="cursor-pointer text-xs text-white mb-2 bg-emerald-700 rounded-md p-2 absolute translate-x-[22rem] translate-y-[-10.2rem]"
               >
                 Choose Room
               </div>
@@ -432,7 +575,7 @@ export default function AddReservations({
       <div className="flex justify-center items-center mt-11">
         <button
           className={`${buttonColor}  text-white rounded-md p-2 px-6 absolute z-10`}
-          disabled={price == 0 || !regis}
+          disabled={price == 0 || !regis || (customers.length > 3)}
           onClick={() => {
             AddReservations();
             handleCloseModal();

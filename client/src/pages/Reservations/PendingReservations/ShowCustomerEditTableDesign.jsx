@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import classNames from 'classnames';
 
-const ShowCustomerEditTableDesign = ({ tableInstance, handleSelect, makeSelectableRows, selectedIDs, deliverrows, paycustomerID, deliverpay }) => {
+const ShowCustomerEditTableDesign = ({ tableInstance, handleSelect, makeSelectableRows, selectedIDs, deliverrows }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [persons, setpersons] = useState([]);
-  const [paycusID, setpaycusID] = useState([])
-  const [itemcolor, setItemColor] = useState("")
-  const [paycus, setpaycus] = useState(paycustomerID)
-  const [newpaycus, setnewpaycus] = useState(paycustomerID)
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
 
@@ -20,21 +16,12 @@ const ShowCustomerEditTableDesign = ({ tableInstance, handleSelect, makeSelectab
     }
   }, [rows, selectedIDsMemoized]);
 
-console.log("iwantpass", paycustomerID)
 
   useEffect(() => {
     setpersons(selectedRows);
     deliverrows(persons);
     console.log("linking", persons)
   }, [selectedRows, deliverrows, persons]);
-
-  useEffect(() => {
-    setpaycusID(selectedRows);
-    deliverrows(persons);
-    console.log("linking", persons)
-  }, [selectedRows, deliverrows, persons]);
-
-
 
   const handleRowSelect = (row, isSelected) => {
     if (isSelected) {
@@ -61,7 +48,7 @@ console.log("iwantpass", paycustomerID)
                     )}
                   >
                     {column.render('Header')}
-                    <div className='absolute translate-y-[-5.6rem] translate-x-[-0.5rem]' >
+                    <div className='absolute translate-y-[-4.5rem] translate-x-[-0.5rem]' >
                       {column.canFilter ? column.render("Filter") : null}
                     </div>
                   </th>
@@ -100,29 +87,18 @@ console.log("iwantpass", paycustomerID)
         </table>
       </div>
       <div>
-        <div htmlFor="registration" className="h-[11rem] translate-x-[35rem] translate-y-[-11rem] w-[11rem] p-2 overflow-auto border-4 border-white rounded-xl">
-          {selectedRows.length === 0 ? (
-            <div>No customers</div>
-          ) : (
-            selectedRows.map((item, key) => {
-              const isSelected = item.original.ID === paycus
-              const itemColor = isSelected ? "bg-white" : ""; 
-              console.log("itemID", item.original.ID)
-              return (
-                <div className={`${itemColor} customerinformation flex cursor-pointer mt-[2rem] mb-[-2rem] text-xs`} key={key}
-                onClick={()=>{
-                  setpaycus(item.original.ID)
-                  deliverpay(item.original.ID);
-
-                }}
-                >
-                  <div className="ml-[] truncate">{item.values.FULL_NAME}</div>
-                  <div className="absolute translate-x-[6rem]">{item.values.BIRTHDAY}</div>
+      <div htmlFor="registration" className="h-[11rem] translate-x-[35rem] translate-y-[-11rem] w-[11rem] p-2 overflow-auto border-4 border-white rounded-xl">
+                  {selectedRows.length === 0 ? (
+                    <div>No customers</div>
+                  ) : (
+                    selectedRows.map((item, key) => (
+                      <div className="flex mt-[2rem] mb-[-2rem] text-xs text-white">
+                        <div className="ml-[] truncate">{item.values.FULL_NAME}</div>
+                        <div className="absolute translate-x-[6rem]">{item.values.BIRTHDAY}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              );
-            })
-          )}
-        </div>
       </div>
     </div>
   );

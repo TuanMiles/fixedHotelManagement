@@ -6,6 +6,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import Select from 'react-select'
 import countryList from 'react-select-country-list'
 import axios from "axios";
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
+import CheckButton from 'react-validation/build/button';
+import { isEmail, isEmpty } from 'validator';
 
 export default function AddRoomsType({ close }) {
     const [startDate, setStartDate] = useState(new Date());
@@ -75,6 +79,7 @@ export default function AddRoomsType({ close }) {
                     <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 ml-12 w-[8rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         type="text"
                         name="type"
+                        required
                         id="type"
                         onChange={(e) => {
                             setType(e.target.value);

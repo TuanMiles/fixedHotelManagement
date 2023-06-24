@@ -4,7 +4,7 @@ import  ShowRoomTableDesign  from './ShowRoomTableDesign'
 import { useMemo } from 'react';
 // import { CustomerColumns } from '../../Customers/CustomerColumns';
 import { TextSearchFilter } from '../../../../components/TextSearchFilter';
-
+import  SelectColumnFilter  from '../../../../components/SelectColumnFilter';
 
 export default function ShowRoomTable({onClose}) {
 
@@ -40,18 +40,21 @@ export default function ShowRoomTable({onClose}) {
     }),
     []
   );
+  
 
   const data = useMemo(() => CustomerData);
   const columns = useMemo(() => [
     {
-      Header: 'Room no',
+      Header: 'Room',
       accessor: 'ROOM_NO',
       Filter: TextSearchFilter,
     },
     { Header: 'Type', accessor: 'TYPE' },
     { Header: 'In Room', accessor: 'IN_ROOM' },
     { Header: 'Price', accessor: 'PRICE' },
-    { Header: 'Status', accessor: 'STATUS' },
+    { Header: 'Status', accessor: 'STATUS',
+    Filter: SelectColumnFilter,
+  },
     { Header: 'Description', accessor: 'DESCRIPTION' },
     {
       Header: 'Choose',
@@ -65,7 +68,7 @@ export default function ShowRoomTable({onClose}) {
           
             // call onClose function to close modal
           }}
-          className="font-medium translate-x-3 cursor-pointer p-2 bg-sky-400 text-center rounded-xl text-white"
+          className="font-medium translate-x-[-0.5rem] py-2 cursor-pointer bg-sky-400 text-center w-[5rem]  rounded-xl text-white"
         >
           Pick
         </div>

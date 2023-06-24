@@ -70,7 +70,7 @@ export default function RentalReceipt() {
         <div className="relative top-[120px] -left-[80px] font-neon">
     
             <ReceiptList deliverstate={setdeliverstate} month={selectedMonth} year={selectedYear} />
-   
+            
         </div>
       </div>
     </div>

@@ -9,6 +9,12 @@ Modal.setAppElement('#root');
 export default function ChooseCustomer({ isOpen, onClose, onSaveChanges }) {
   const [cusDeliver, setCusDeliver] = useState([]);
   const handleCloseModal = () => {
+    localStorage.removeItem("pickedCustomers");
+    onClose();
+
+  };
+
+  const handleCloseaModal = () => {
     onClose();
   };
 
@@ -53,7 +59,7 @@ export default function ChooseCustomer({ isOpen, onClose, onSaveChanges }) {
                     &times;
                 </div>
     <div className="mt-[4rem]">
-        <ShowCustomerTable onClose={handleCloseModal} handleSelect={setObj}/>
+        <ShowCustomerTable onClose={handleCloseaModal} handleSelect={setObj}/>
     </div>
       {/* <button onClick={handleSaveChanges}>Save Changes</button> */}
     </Modal>

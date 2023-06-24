@@ -5,10 +5,11 @@ import CheckDetail from "./Modals/Detail/CheckDetail";
 import UpdateStatus from "./Status/UpdateStatus";
 import { ModalContext } from "../../ModalContext";
 import { useContext } from "react";
+import {TextSearchFilter} from '../../components/TextSearchFilter'
 
 export const ReservationsColumns = [
   { Header: "Id", accessor: (row, index) => index + 1 },
-  { Header: "Room", accessor: "ROOM" },
+  { Header: "Room", accessor: "ROOM", Filter: TextSearchFilter},
   {
     Header: "Details",
     Cell: ({ row }) => (
@@ -50,31 +51,32 @@ export const ReservationsColumns = [
       ></UpdateStatus>
     ),
   },
-  {
-    Header: "Action",
-    Cell: ({ row }) => (
-      <Popup
-        nested
-        modal
-        trigger={
-          <button className="translate-x-3">
-            <img src={Edit} alt="" className="w-7 h-7" />
-          </button>
-        }
-      >
-        {(close) => (
-          <EditDataModal
-            close={close}
-            ID={row.original.ID}
-            RoomID={row.original.ROOMID}
-            roomname={row.original.ROOM}
-            roomtype={row.original.ROOM_TYPE}
-            regisdatetime={row.original.REGISDATE}
-            arrivaltime={row.original.ARRIVAL}
-            departuretime={row.original.DEPARTURE}
-          />
-        )}
-      </Popup>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   Cell: ({ row }) => (
+  //     <Popup
+  //       nested
+  //       modal
+  //       trigger={
+  //         <button className="translate-x-3">
+  //           <img src={Edit} alt="" className="w-7 h-7" />
+  //         </button>
+  //       }
+  //     >
+  //       {(close) => (
+  //         <EditDataModal
+  //           close={close}
+  //           ID={row.original.ID}
+  //           RoomID={row.original.ROOMID}
+  //           roomname={row.original.ROOM}
+  //           roomtype={row.original.ROOM_TYPE}
+  //           regisdatetime={row.original.REGISDATE}
+  //           arrivaltime={row.original.ARRIVAL}
+  //           departuretime={row.original.DEPARTURE}
+  //           ROWDATA={row.original}
+  //         />
+  //       )}
+  //     </Popup>
+  //   ),
+  // },
 ];
