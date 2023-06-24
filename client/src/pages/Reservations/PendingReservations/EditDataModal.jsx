@@ -400,7 +400,8 @@ export default function EditDataModal({ close, ID, RoomID, roomname, roomtype, r
   useEffect(() => {
     fetchUnavailableDates();
   }, [roomdata])
-
+  
+  
   // console.log("loasdas",roomdata,unavailableDates)
 
   const fetchUnavailableDates = () => {

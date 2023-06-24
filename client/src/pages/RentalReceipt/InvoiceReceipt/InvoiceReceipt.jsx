@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTable, useFilters } from 'react-table';
-import Table from '../../../Table';
+import InvoiceTable from './InvoiceTable';
 import { useMemo } from 'react';
 import {TextSearchFilter} from '../../../components/TextSearchFilter'
+import Popup from "reactjs-popup";
+import CheckDetailTable from './CheckDetailTable';
 
 
 export default function InvoiceReceipt() {
@@ -16,14 +18,36 @@ export default function InvoiceReceipt() {
   const columns = useMemo(
     () => [
       { Header: 'ID', accessor: (row, index) => index + 1 },
-      { Header: 'Full name', accessor: 'FULL_NAME', Filter: TextSearchFilter },
-      { Header: 'Room', accessor: 'ROOM' },
-      { Header: 'Gender', accessor: 'GENDER' },
-      { Header: 'Birthday', accessor: 'BIRTHDAY' },
-      { Header: 'Phone Number', accessor: 'PHONE_NUMBER' },
-      { Header: 'Identity Number', accessor: 'IDENTITY_NUMBER',},
-      { Header: 'Country', accessor: 'COUNTRY' },
-      { Header: 'Address', accessor: 'ADDRESS' },
+      { Header: 'Full name', accessor: 'CUSTOMER', Filter: TextSearchFilter },
+      { Header: 'Room', accessor: 'ADDRESS' },
+      { Header: 'Total ($)', accessor: 'TOTAL', Cell: ({ value }) => (
+        <div>
+          {value.toLocaleString(undefined, {
+          })}
+        </div>
+      ) },
+      {
+        Header: "Details",
+        Cell: ({ row }) => (
+          <Popup
+            modal
+            trigger={
+              <button className="p-2 bg-emerald-600 text-white rounded-lg">
+                Check
+              </button>
+            }
+          >
+            {(close) => (
+              <CheckDetailTable
+                close={close}
+                ID={row.original.ID}
+                PAYCUS={row.original.PAYCUSID}
+              />
+            )}
+          </Popup>
+        ),
+      },
+    
     ],
     []
   );
@@ -34,7 +58,7 @@ export default function InvoiceReceipt() {
       let user = JSON.parse(localStorage.getItem("userAuth"))
       let userid = user.ID;
       try{
-      const response = await fetch(`http://localhost:5000/customers?userId=${userid}`);
+      const response = await fetch(`http://localhost:5000/invoice?userid=${userid}`);
       const jsonData = await response.json(); 
       console.log(jsonData);
       setData(jsonData);
@@ -60,7 +84,7 @@ export default function InvoiceReceipt() {
   return (
 
 
-    <Table tableInstance={tableInstance} />
+    <InvoiceTable tableInstance={tableInstance} />
 
   );
 };

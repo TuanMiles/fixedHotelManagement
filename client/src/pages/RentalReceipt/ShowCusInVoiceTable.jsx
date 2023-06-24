@@ -10,14 +10,14 @@ import axios from 'axios'
 export default function ShowCusInVoiceTable({onClose, reDeliver}) {
 
   const handleCloseModal = (props) => {
-    let data = JSON.stringify(props)
-    localStorage.setItem('RoomPickData', data)
     onClose();
   };
 
   let user = JSON.parse(localStorage.getItem("userAuth"));
   let userid = user.ID;
-  
+  const sum = reDeliver.reduce((total, obj) => total + obj.PRICE, 0);
+
+
   const [PickData, setPickData] = useState([])
 
   const [CustomerData, setData] = useState([]);
@@ -45,20 +45,18 @@ export default function ShowCusInVoiceTable({onClose, reDeliver}) {
     []
   );
   
-  const AddInvoice = async () => {
+  const AddInvoice = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/createreservation",
+        `http://localhost:5000/createinvoice?userid=${userid}&name=${data.FULL_NAME}&address=${data.ADDRESS}&total=${sum}`,
         {
-          userid: userid,
-
         }
       );
       console.log("Thanh Cong");
       const invoiceID = response.data.insertId;
       console.log("haha")
-      console.log(response)
-      await AddReservationsDetail(invoiceID);
+      console.log("res", response)
+      await AddInvoiceDetail(response.data.insertId);
     } catch (error) {
       console.error("Error posting data:", error);
     }
@@ -67,9 +65,13 @@ export default function ShowCusInVoiceTable({onClose, reDeliver}) {
   const AddInvoiceDetail = async (invoiceID) => {
     try {
       for (const res of reDeliver) {
-        await axios.post("http://localhost:5000/createreservationdetail", {
+        await axios.post("http://localhost:5000/createinvoicedetail", {
+          inid: invoiceID,
           userid: userid,
-
+          room: res.ROOM,
+          type: res.ROOM_TYPE,
+          rentdays: res.RENTDAYS,
+          total: res.PRICE,
         });
       }
       console.log("detail data posted successfully");
@@ -97,7 +99,7 @@ export default function ShowCusInVoiceTable({onClose, reDeliver}) {
         <div
           onClick={() => {
             setPickData(row.original)
-            AddInvoice
+            AddInvoice(row.original)
             // handleCloseModal(row.original);
          
     

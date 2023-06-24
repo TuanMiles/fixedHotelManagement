@@ -17,7 +17,7 @@ export const RoomsTypeColumns = [
     {
       Header: 'Action', Cell: ({ row }) => <Popup modal trigger={<button className="translate-x-3"><img src={Edit} alt="" className="w-7 h-7" /></button>}>
         {close => <ActionRoomsType close={close} ID={row.original.ID} type={row.original.TYPE} level={row.original.LEVEL} price={row.original.PRICE}
-        capacity={row.original.CAPACITY} rate={row.original.SC_RATE} desc={row.original.DESCRIPTION}
+        capacity={row.original.CAPACITY} rate={row.original.SC_RATE} desc={row.original.DESCRIPTION} frompeople={row.original.FROMPEOPLE}
         />}
       </Popup>
     },

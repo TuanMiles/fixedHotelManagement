@@ -76,6 +76,7 @@ export default function AddReservations({
   useEffect(() => {
     if (room) {
       getblocktime()
+      getRoomsType()
     }
   }, [localStorage.getItem("RoomPickData")])
 
@@ -182,24 +183,26 @@ export default function AddReservations({
     // Perform any actions with the cusDeliver variable here
 
     if (room && customers) {
+      const newprice = RoomsTypeData[0].PRICE
+      const newphuthu =  RoomsTypeData[0].SC_RATE
       const hasNonVietnameseCustomer = customers.some(
         (customer) => customer.COUNTRY !== "Viet Nam"
       );
       if (customers.length <= 2) {
         if (hasNonVietnameseCustomer) {
-          setPrice(room.PRICE * numOfDays * 1.5);
+          setPrice(newprice * numOfDays * 1.5);
         } else {
-          setPrice(room.PRICE * numOfDays);
+          setPrice(newprice * numOfDays);
         }
       } else {
         if (hasNonVietnameseCustomer) {
-          setPrice(room.PRICE * numOfDays * (phuthu / 100 + 1) * 1.5);
+          setPrice(newprice * numOfDays * (newphuthu / 100 + 1) * 1.5);
         } else {
-          setPrice(room.PRICE * numOfDays * (phuthu / 100 + 1));
+          setPrice(newprice * numOfDays * (newphuthu / 100 + 1));
         }
       }
     }
-  }, [room]);
+  }, [room, arrival, departure]);
 
   const maxCus = 3
   useEffect(() => {
@@ -213,6 +216,25 @@ export default function AddReservations({
   let user = JSON.parse(localStorage.getItem("userAuth"));
   let userid = user.ID;
   
+
+  const [RoomsTypeData, setrtData] = useState([]);
+
+
+    const getRoomsType = async () => {
+      try{
+      const response = await fetch(`http://localhost:5000/roomstypewhat?userId=${userid}&type=${room.TYPE}`);
+      const jsonData = await response.json(); 
+      console.log(jsonData);
+      setrtData(jsonData);
+      } catch (error){
+        console.error("Error fetching data:", error);
+      }
+    }
+    
+
+
+  console.log(RoomsTypeData)
+
   const AddReservations = async () => {
     const date = parse(regis, "M/d/yyyy", new Date());
     const month = format(date, "M");

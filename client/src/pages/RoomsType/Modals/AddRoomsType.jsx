@@ -22,6 +22,7 @@ export default function AddRoomsType({ close }) {
     const [SC_RATE, setRate] = useState('')
     const [DESC, setDesc] = useState('')
     const [PRICE, setPrice] = useState('')
+    const [nPEOPlE, setnPeople] = useState('')
 
     const displayInfo = () => {
         console.log(TYPE,LEVEL,PRICE,CAPACITY,SC_RATE,DESC)
@@ -39,36 +40,37 @@ export default function AddRoomsType({ close }) {
             capacity: CAPACITY,
             rate: SC_RATE,
             desc: DESC,
+            frompeople: nPEOPlE,
           });
       
           const roomtypeid = response.data.insertId;
           console.log("RoomType ID:", roomtypeid);
           console.log(response)
-          await addRevenue(roomtypeid);
+        //   await addRevenue(roomtypeid);
           console.log("thanh cong");
         } catch (error) {
           console.log(error);
         }
       };
 
-    const addRevenue = async (roomtypeid) => {
-        let user = JSON.parse(localStorage.getItem("userAuth"))
-        let userid = user.ID;
-        let rtid = roomtypeid;
-        axios.post('http://localhost:5000/createrevenue',{
-            userid: userid,
-            roomtype: TYPE,
-            rtid: rtid,
-        }).then(() => {
-            console.log("thanh cong")
-        })
-    }
+    // const addRevenue = async (roomtypeid) => {
+    //     let user = JSON.parse(localStorage.getItem("userAuth"))
+    //     let userid = user.ID;
+    //     let rtid = roomtypeid;
+    //     axios.post('http://localhost:5000/createrevenue',{
+    //         userid: userid,
+    //         roomtype: TYPE,
+    //         rtid: rtid,
+    //     }).then(() => {
+    //         console.log("thanh cong")
+    //     })
+    // }
 
     
 
     return (
         <div className="pl-24 h-[22rem]">
-            <div className="translate-x-[41rem] text-2xl">
+            <div className="translate-x-[59rem] text-2xl">
                 <a className="close cursor-pointer" onClick={close}>
                     &times;
                 </a>
@@ -144,8 +146,20 @@ export default function AddRoomsType({ close }) {
 
                     />
                 </div>
+                <div className="ml-8 mt-2">
+                    <label htmlFor="identity" className="mb-2 text-sm font-medium text-gray-900 dark:text-white">From npeople</label>
+                    <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 ml-6 w-[8rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        type="text"
+                        name="surchargerate"
+                        id="surchargerate"
+                        onChange={(e) => {
+                            setnPeople(e.target.value);
+                        }}
+
+                    />
+                </div>
                
-                <div className="translate-x-7 translate-y-[220px]">
+                <div className="translate-x-7 translate-y-[160px]">
                     {/* <button className="right-0 bottom-0 -translate-x-40 absolute  bg-[#f59e0b] text-white p-2 rounded-lg">Delete</button> */}
                     <button className="right-0 bottom-0 absolute -translate-x-8 bg-[#374151] text-white p-2 rounded-lg cursor-pointer w-[8rem]" onClick={addRoomsType}>Save Changes</button>
                 </div>

@@ -246,11 +246,12 @@ app.post('/createroomstype', (req, res) => {
     const level = req.body.level;
     const price = req.body.price;
     const capacity = req.body.capacity;
-    const rate = req.body.rate
+    const rate = req.body.rate;
+    const frompeople = req.body.frompeople;
     const description = req.body.desc;
 
-    DBconnection.query('INSERT INTO rooms_type (USERID, TYPE, LEVEL, PRICE, CAPACITY, SC_RATE, DESCRIPTION) VALUES (?,?,?,?,?,?,?)',
-        [userid, type, level, price, capacity, rate, description], (err, result) => {
+    DBconnection.query('INSERT INTO rooms_type (USERID, FROMPEOPLE, TYPE, LEVEL, PRICE, CAPACITY, SC_RATE, DESCRIPTION) VALUES (?,?,?,?,?,?,?,?)',
+        [userid,frompeople, type, level, price, capacity, rate, description], (err, result) => {
             if (err) {
                 console.log(err)
             } else {
@@ -285,6 +286,30 @@ app.get('/roomstype', (req, res) => {
     })
 })
 
+app.get('/roomstypewhat', (req, res) => {
+    const userId = req.query.userId;
+    const type = req.query.type
+    DBconnection.query("SELECT * FROM rooms_type WHERE USERID = ? AND TYPE = ?",
+    [userId, type],
+    (err, result) => {
+        if (err) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                // Handle the constraint error by sending an appropriate error response
+                res.status(400).json({ error: 'Duplicate entry' });
+              } else {
+                // Handle other errors
+                res.status(500).json({ error: 'Internal server error' });
+              }
+            console.log(err)
+            res.status(400).send('Error retrieving data');
+        }
+        else {
+            res.send(result)
+        }
+
+    })
+})
+
 app.put('/updateroomstype', (req, res) => {
     const type = req.body.type;
     const level = req.body.level;
@@ -293,9 +318,10 @@ app.put('/updateroomstype', (req, res) => {
     const rate = req.body.rate
     const description = req.body.desc;
     const id = req.body.id;
+    const frompeople = req.body.frompeople;
 
-    DBconnection.query("UPDATE rooms_type SET TYPE = ?, LEVEL = ?, PRICE = ?, CAPACITY = ?, SC_RATE = ?, DESCRIPTION = ? WHERE ID = ?", 
-    [type, level, price, capacity, rate, description, id], (err,result) => {
+    DBconnection.query("UPDATE rooms_type SET TYPE = ?, LEVEL = ?, PRICE = ?, CAPACITY = ?, SC_RATE = ?, DESCRIPTION = ?, FROMPEOPLE = ? WHERE ID = ?", 
+    [type, level, price, capacity, rate, description, frompeople, id], (err,result) => {
         if (err){
             console.log(err)
         }
@@ -855,9 +881,29 @@ app.post('/createinvoice', (req, res) => {
     const customer = req.query.name
     const address = req.query.address
     const total = req.query.total
+    const rid = req.query.rid
     
     DBconnection.query('INSERT INTO invoiced_receipt (USERID, CUSTOMER, ADDRESS, TOTAL) VALUES (?,?,?,?)',
-        [userid, reserID, customerid, fullname, type, country, identity, address, birthday], (err, result) => {
+        [userid, customer, address, total], (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    );
+})
+
+app.post('/createinvoicedetail', (req, res) => {
+    const userid = req.body.userid
+    const inid = req.body.inid
+    const room = req.body.room
+    const type = req.body.type
+    const total = req.body.total
+    const rentdays = req.body.rentdays
+    
+    DBconnection.query('INSERT INTO invoice_detail (USERID, INID, ROOM, ROOM_TYPE, RENTDAYS, TOTAL) VALUES (?,?,?,?,?,?)',
+        [userid, inid, room, type, rentdays, total], (err, result) => {
             if (err) {
                 console.log(err)
             } else {
@@ -866,6 +912,42 @@ app.post('/createinvoice', (req, res) => {
         }
     );
 })
+
+app.get('/invoice', (req, res) => {
+    const userid = req.query.userid;
+    DBconnection.query("SELECT * FROM invoiced_receipt WHERE USERID = ?",
+    [userid],
+    (err, result) => {
+        if (err) {
+            console.log(err)
+            res.status(500).send('Error retrieving data');
+        }
+        else {
+            res.send(result)
+        }
+
+    })
+})
+
+app.get('/invoicedetail', (req, res) => {
+    const userid = req.query.userid;
+    const inid = req.query.inid;
+
+    DBconnection.query("SELECT * FROM invoice_detail WHERE USERID = ? AND INID = ?",
+    [userid, inid],
+    (err, result) => {
+        if (err) {
+            console.log(err)
+            res.status(500).send('Error retrieving data');
+        }
+        else {
+            res.send(result)
+        }
+
+    })
+})
+
+
 // app.put('/createrevenue', (req, res) => {
 //     const userid = req.body.userid;
 //     const roomtype = req.body.roomtype;

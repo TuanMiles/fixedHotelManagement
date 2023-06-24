@@ -8,7 +8,7 @@ import countryList from 'react-select-country-list'
 import axios from "axios"
 
 
-export default function ActionRoomsType({ close, ID, type, level, price, capacity, rate, desc }) {
+export default function ActionRoomsType({ close, ID, type, level, price, capacity, rate, desc, frompeople }) {
     const [startDate, setStartDate] = useState(new Date());
     const [value, setValue] = useState('')
     const options = useMemo(() => countryList().getData(), [])
@@ -19,6 +19,7 @@ export default function ActionRoomsType({ close, ID, type, level, price, capacit
     const [nCAPACITY, setnewCapacity] = useState(capacity)
     const [nSC_RATE, setnewRate] = useState(rate)
     const [nDESC, setnewDesc] = useState(desc)
+    const [fromnpeople, setfrompeople] = useState(frompeople)
 
     const [CustomerData, setData] = useState([]);
 
@@ -47,6 +48,7 @@ export default function ActionRoomsType({ close, ID, type, level, price, capacit
             capacity: nCAPACITY,
             rate: nSC_RATE,
             desc: nDESC,
+            frompeople: fromnpeople,
           
         }).then(
             (response) => {
@@ -71,7 +73,7 @@ export default function ActionRoomsType({ close, ID, type, level, price, capacit
 
     return (
         <div className="pl-24 h-[22rem]">
-            <div className="translate-x-[41rem] text-2xl">
+            <div className="translate-x-[58rem] text-2xl">
                 <a className="close cursor-pointer" onClick={close}>
                     &times;
                 </a>
@@ -154,8 +156,21 @@ export default function ActionRoomsType({ close, ID, type, level, price, capacit
 
                     />
                 </div>
+                <div className="ml-8 mt-2">
+                    <label htmlFor="identity" className="mb-2 text-sm font-medium text-gray-900 dark:text-white">From People</label>
+                    <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 ml-6 w-[8rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        type="text"
+                        name="surchargerate"
+                        id="surchargerate"
+                        defaultValue={fromnpeople}
+                        onChange={(e) => {
+                            setfrompeople(e.target.value);
+                        }}
+
+                    />
+                </div>
                
-                <div className="translate-x-7 translate-y-[220px]">
+                <div className="translate-x-7 translate-y-[160px]">
                     <button className="right-4 bottom-0 -translate-x-40 absolute  bg-[#f59e0b] text-white p-2 rounded-lg" onClick={() => {deleteRoomsType(ID)}}>Delete</button>
                     <button className="right-0 bottom-0 absolute -translate-x-8 bg-[#374151] text-white p-2 rounded-lg cursor-pointer w-[8rem]" type="submit" onClick={() => {updateRoomsType(ID)}}>Save Changes</button>
                 </div>
