@@ -183,26 +183,24 @@ export default function AddReservations({
     // Perform any actions with the cusDeliver variable here
 
     if (room && customers) {
-      const newprice = RoomsTypeData[0].PRICE
-      const newphuthu =  RoomsTypeData[0].SC_RATE
       const hasNonVietnameseCustomer = customers.some(
         (customer) => customer.COUNTRY !== "Viet Nam"
       );
       if (customers.length <= 2) {
         if (hasNonVietnameseCustomer) {
-          setPrice(newprice * numOfDays * 1.5);
+          setPrice(room.PRICE * numOfDays * 1.5);
         } else {
-          setPrice(newprice * numOfDays);
+          setPrice(room.PRICE * numOfDays);
         }
       } else {
         if (hasNonVietnameseCustomer) {
-          setPrice(newprice * numOfDays * (newphuthu / 100 + 1) * 1.5);
+          setPrice(room.PRICE * numOfDays * (phuthu / 100 + 1) * 1.5);
         } else {
-          setPrice(newprice * numOfDays * (newphuthu / 100 + 1));
+          setPrice(room.PRICE * numOfDays * (phuthu / 100 + 1));
         }
       }
     }
-  }, [room, arrival, departure]);
+  }, [room]);
 
   const maxCus = 3
   useEffect(() => {
