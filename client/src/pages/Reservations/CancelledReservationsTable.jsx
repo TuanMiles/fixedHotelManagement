@@ -121,7 +121,7 @@ export default function CancelledReservationsTable({ refresh }) {
     return (
       <>
         <button disabled={reDeliver.length===0} onClick={DeleteReservationDetail} className={`${deleteColor} absolute flex gap-4 mt-5 py-2 px-8   text-sm rounded-md text-white hover:shadow-lg transition -translate-y-16 duration-300 top-0 right-0`}>Delete</button>
-        <CancelledReservationTableDesign tableInstance={tableInstance} handleSelect={setObj} e />
+        <CancelledReservationTableDesign tableInstance={tableInstance} handleSelect={setObj}/>
       </>
 
     );

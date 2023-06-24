@@ -445,8 +445,8 @@ app.delete('/deletereservationdetail/:id', (req,res) => {
     })
 })
 
-app.delete('/deletereservation/:id', (req,res) => {
-    const id=req.params.id
+app.delete('/deletereservation', (req,res) => {
+    const id=req.query.id
     DBconnection.query("DELETE FROM reservations WHERE ID = ?", [id], (err,result) =>{
         if (err){
             console.log(err)
