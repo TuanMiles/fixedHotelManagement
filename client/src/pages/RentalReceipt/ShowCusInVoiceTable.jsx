@@ -75,6 +75,20 @@ export default function ShowCusInVoiceTable({onClose, reDeliver}) {
         });
       }
       console.log("detail data posted successfully");
+      await UpdateReceiptStatus()
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
+
+  };
+  const UpdateReceiptStatus = async () => {
+    try {
+      for (const res of reDeliver) {
+        await axios.put("http://localhost:5000/updaterentalstatus", {
+          recid: res.RECID,
+        });
+      }
+      console.log("detail data posted successfully");
       window.location.reload()
     } catch (error) {
       console.error("Error posting data:", error);

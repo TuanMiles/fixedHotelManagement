@@ -154,6 +154,21 @@ app.put('/updatecustomers', (req, res) => {
     })
 })
 
+app.put('/updaterentalstatus', (req, res) => {
+    const status = "Paid"
+    const recid = req.body.recid
+
+    DBconnection.query("UPDATE rental_receipt SET STATUS = ? WHERE RECID = ?", 
+    [status, recid ], (err,result) => {
+        if (err){
+            console.log(err)
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
+
 app.delete('/deletecustomer/:id', (req,res) => {
     const id=req.params.id
     DBconnection.query("DELETE FROM customers WHERE ID = ?", [id], (err,result) =>{
