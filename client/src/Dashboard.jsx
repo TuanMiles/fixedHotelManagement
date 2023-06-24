@@ -8,6 +8,8 @@ export default function Dashboard() {
         { title: "Expected of Departures", value:"value", total:"Total Pax"},
         { title: "Rental Receipt", value:"value", total:"Total Pax"},
       ];
+
+      
     return (
         <div className="">
             {/* <Liveclock/> */}

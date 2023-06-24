@@ -305,9 +305,9 @@ export default function EditDataModal({ close, ID, RoomID, roomname, roomtype, r
       const reservationID = ID;
       await JustDeleteReservationDetail(reservationID)
       await UpdateReservationDetail(reservationID);
-      setTimeout(() => {
-        window.location.reload()
-      }, 1500);
+      // setTimeout(() => {
+      //   window.location.reload()
+      // }, 1500);
     } catch (error) {
       console.error("Error posting data:", error);
     }
@@ -337,6 +337,9 @@ export default function EditDataModal({ close, ID, RoomID, roomname, roomtype, r
         }
       }
       console.log("Reservation detail updated successfully");
+      setTimeout(() => {
+        window.location.reload(false);
+      }, 1500);
       
     } catch (error) {
       console.error("Error updating data:", error);
